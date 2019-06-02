@@ -14,7 +14,7 @@ public class MyBatisPlusGenerator {
 
     public static void main(String[] args) {
         String author = System.getProperty("user.name");
-        String restPathName = "easyfood-api";
+        String restPathName = "easyfood-common";
         String entityPathName = "easyfood-common";
         String restPath = System.getProperty("user.dir") + "/" + restPathName + "/src/main/java";
         String entityPath = System.getProperty("user.dir") + "/" + entityPathName + "/src/main/java";
@@ -62,10 +62,10 @@ public class MyBatisPlusGenerator {
         PackageConfig pc = new PackageConfig();
         pc.setParent(null);
         pc.setEntity("com.im050.easyfoodcommon.entity");
-        pc.setMapper("com.im050.easyfoodapi.dao");
-        pc.setXml("com.im050.easyfoodapi.dao.mapping");
-        pc.setService("com.im050.easyfoodapi.service");
-        pc.setServiceImpl("com.im050.easyfoodapi.service.impl");
+        pc.setMapper("com.im050.easyfoodcommon.dao");
+        pc.setXml("com.im050.easyfoodcommon.dao.mapping");
+        pc.setService("com.im050.easyfoodcommon.service");
+        pc.setServiceImpl("com.im050.easyfoodcommon.service.impl");
         pc.setController("com.im050.easyfoodapi.controller");
 
         Map<String, String> pathMap = new HashMap<>();
