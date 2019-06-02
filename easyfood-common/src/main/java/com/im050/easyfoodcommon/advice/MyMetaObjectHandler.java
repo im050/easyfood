@@ -1,9 +1,11 @@
-package com.im050.easyfoodapi.advice;
+package com.im050.easyfoodcommon.advice;
+
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
@@ -11,15 +13,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         Object createdAt = getFieldValByName("createdAt", metaObject);
         Object updatedAt = getFieldValByName("updatedAt", metaObject);
         if (createdAt == null) {
-            setFieldValByName("createdAt", LocalDateTime.now(), metaObject);
+            setFieldValByName("createdAt", new Date(), metaObject);
         }
         if (updatedAt == null) {
-            setFieldValByName("updatedAt", LocalDateTime.now(), metaObject);
+            setFieldValByName("updatedAt", new Date(), metaObject);
         }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        setFieldValByName("updatedAt", LocalDateTime.now(), metaObject);
+        setFieldValByName("updatedAt", new Date(), metaObject);
     }
 }

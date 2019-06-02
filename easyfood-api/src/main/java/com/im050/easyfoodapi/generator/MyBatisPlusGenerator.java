@@ -16,8 +16,10 @@ public class MyBatisPlusGenerator {
         String author = System.getProperty("user.name");
         String restPathName = "easyfood-common";
         String entityPathName = "easyfood-common";
+        String controllerPathName = "easyfood-api";
         String restPath = System.getProperty("user.dir") + "/" + restPathName + "/src/main/java";
         String entityPath = System.getProperty("user.dir") + "/" + entityPathName + "/src/main/java";
+        String controllerPath = System.getProperty("user.dir") + "/" + controllerPathName + "/src/main/java";
 
         AutoGenerator mpg = new AutoGenerator();
 
@@ -72,7 +74,7 @@ public class MyBatisPlusGenerator {
         pathMap.put("entity_path", joinPath(entityPath, pc.getEntity()));
         pathMap.put("service_path", joinPath(restPath, pc.getService()));
         pathMap.put("service_impl_path", joinPath(restPath, pc.getServiceImpl()));
-        pathMap.put("controller_path", joinPath(restPath, pc.getController()));
+        pathMap.put("controller_path", joinPath(controllerPath, pc.getController()));
         pathMap.put("mapper_path", joinPath(restPath, pc.getMapper()));
         pc.setPathInfo(pathMap);
 

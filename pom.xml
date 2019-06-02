@@ -29,6 +29,7 @@
 
     <modules>
         <module>easyfood-api</module>
+        <module>easyfood-admin</module>
         <module>easyfood-common</module>
     </modules>
     <dependencyManagement>
