@@ -7,7 +7,6 @@
         <artifactId>easyfood</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.im050</groupId>
     <artifactId>easyfood-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>easyfood-common</name>

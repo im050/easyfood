@@ -30,6 +30,15 @@ spring:
       wall:
         config:
           multi-statement-allow: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 1000
+    database: 0
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
