@@ -31,5 +31,13 @@ public class Response extends HashMap<String, Object> {
         return success(null);
     }
 
+    public static Response error(ResponseCode responseCode) {
+        return new Response(responseCode, null);
+    }
+
+    public static Response error() {
+        return new Response(ResponseCode.ERROR, null);
+    }
+
 }
 

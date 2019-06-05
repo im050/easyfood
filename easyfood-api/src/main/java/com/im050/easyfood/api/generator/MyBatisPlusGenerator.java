@@ -53,7 +53,7 @@ public class MyBatisPlusGenerator {
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"attr_relationship"}); // 需要生成的表
+        strategy.setInclude(new String[]{"merchant_permission"}); // 需要生成的表
         strategy.setRestControllerStyle(true);
         strategy.setEntityLombokModel(true);
         strategy.setSuperEntityClass("SuperEntity");

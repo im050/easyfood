@@ -20,7 +20,6 @@ public class Shop extends SuperEntity<Shop> {
 
 	private String name;
 	private String description;
-	private Integer merchantId;
 	private String notice;
 	private BigDecimal longitude;
 	private BigDecimal latitude;

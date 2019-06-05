@@ -19,6 +19,8 @@ public class Merchant extends SuperEntity<Merchant> {
 	private String username;
 	private String password;
 	private String realName;
+	private Integer parentId;
+	private Integer roleId;
 	private String phoneNumber;
 	private String email;
 
