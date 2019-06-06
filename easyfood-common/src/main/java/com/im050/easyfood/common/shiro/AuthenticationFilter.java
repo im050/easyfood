@@ -1,4 +1,4 @@
-package com.im050.easyfood.admin.shiro;
+package com.im050.easyfood.common.shiro;
 
 import com.alibaba.fastjson.JSONObject;
 import com.im050.easyfood.common.utils.response.Response;
@@ -10,7 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
-public class MerchantAuthenticationFilter extends FormAuthenticationFilter {
+public class AuthenticationFilter extends FormAuthenticationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) {
         PrintWriter out = null;

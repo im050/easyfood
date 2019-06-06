@@ -64,6 +64,12 @@
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>1.4.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

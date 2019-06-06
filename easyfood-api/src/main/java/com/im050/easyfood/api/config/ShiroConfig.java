@@ -1,12 +1,12 @@
-package com.im050.easyfood.admin.config;
+package com.im050.easyfood.api.config;
 
-import com.im050.easyfood.admin.shiro.MerchantRealm;
 import com.im050.easyfood.common.shiro.AuthenticationFilter;
 import com.im050.easyfood.common.shiro.HeaderSessionManager;
 import com.im050.easyfood.common.shiro.ShiroRedisCacheManager;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.realm.ldap.DefaultLdapRealm;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -34,19 +34,8 @@ public class ShiroConfig {
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-        filterChainDefinitionMap.put("/auth/logout", "anon");
-        filterChainDefinitionMap.put("/auth/login", "anon");
-        // druid
-        filterChainDefinitionMap.put("/druid/**", "anon");
 
-        // swagger
-        filterChainDefinitionMap.put("/swagger-ui.html", "anon");
-        filterChainDefinitionMap.put("/webjars/**", "anon");
-        filterChainDefinitionMap.put("/swagger-resources/**", "anon");
-        filterChainDefinitionMap.put("/v2/**", "anon");
-
-        // 其他所有接口都需要登录
-        filterChainDefinitionMap.put("/**", "authc");
+        filterChainDefinitionMap.put("/**", "anon");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         shiroFilterFactoryBean.setFilters(filters);
@@ -86,7 +75,7 @@ public class ShiroConfig {
 
     @Bean
     public Realm realm() {
-        return new MerchantRealm();
+        return new DefaultLdapRealm();
     }
 
     @Bean

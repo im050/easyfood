@@ -1,18 +1,15 @@
 package com.im050.easyfood.admin.shiro;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.im050.easyfood.admin.constant.SessionConstants;
 import com.im050.easyfood.common.constant.ColumnConstants;
 import com.im050.easyfood.common.entity.Merchant;
 import com.im050.easyfood.common.entity.MerchantPermission;
 import com.im050.easyfood.common.entity.MerchantRole;
-import com.im050.easyfood.common.entity.MerchantRolePermission;
 import com.im050.easyfood.common.exception.MerchantNotFound;
 import com.im050.easyfood.common.service.MerchantRolePermissionService;
 import com.im050.easyfood.common.service.MerchantRoleService;
 import com.im050.easyfood.common.service.MerchantService;
-import com.im050.easyfood.common.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
