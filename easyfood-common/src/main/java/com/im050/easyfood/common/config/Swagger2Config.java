@@ -27,7 +27,7 @@ public class Swagger2Config {
 //        langBuilder.name("Accept-Language").description("默认中文，en英文。非必需，一般是需要显示英文时传参")
 //                .modelRef(new ModelRef("String")).parameterType("header")
 //                .required(false).build();
-        authorizationBuilder.name("Authorization").description("登录之后返回的鉴权码")
+        authorizationBuilder.name("X-EasyFood-Token").description("登录之后返回的鉴权码")
                 .modelRef(new ModelRef("String")).parameterType("header")
                 .required(false).build();
 
