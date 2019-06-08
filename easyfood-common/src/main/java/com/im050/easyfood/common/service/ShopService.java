@@ -16,6 +16,28 @@ import java.util.List;
  */
 public interface ShopService extends IService<Shop> {
 
+    /**
+     * 获取商户的门店列表
+     *
+     * @param merchantId
+     * @return
+     */
+    List<Shop> getMerchantShop(Integer merchantId);
 
+    /**
+     * 校验商店是否归属某商户
+     *
+     * @param shopId
+     * @param merchantId
+     * @return
+     */
+    boolean checkShopOwner(Integer shopId, Integer merchantId);
+
+    /**
+     * 获取商店的所有菜单和餐品
+     *
+     * @param shopId
+     * @return
+     */
     List<MenuVO> getAllFoodsWithMenu(Integer shopId);
 }

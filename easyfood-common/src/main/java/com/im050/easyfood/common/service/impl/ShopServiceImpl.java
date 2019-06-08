@@ -41,6 +41,25 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     @Autowired
     AttrRelationshipService attrRelationshipService;
 
+    @Autowired
+    ShopDao shopDao;
+
+    @Override
+    public List<Shop> getMerchantShop(Integer merchantId) {
+        return shopDao.selectMerchantShop(merchantId);
+    }
+
+    @Override
+    public boolean checkShopOwner(Integer shopId, Integer merchantId) {
+        List<Shop> shops = getMerchantShop(merchantId);
+        for (Shop shop : shops) {
+            if (shop.getId().equals(shopId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public List<MenuVO> getAllFoodsWithMenu(Integer shopId) {
         QueryWrapper queryWrapper = new QueryWrapper();

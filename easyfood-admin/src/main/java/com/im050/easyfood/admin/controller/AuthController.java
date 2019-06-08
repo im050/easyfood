@@ -26,15 +26,11 @@ public class AuthController {
     private final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
-    private RedisTemplate redisTemplate;
-
-    @Autowired
     MerchantService merchantService;
 
     @ApiOperation("登录")
     @PostMapping("/login")
     public Response login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        redisTemplate.opsForValue().set("hallo", "d");
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username, Tools.md5(password));
         try {
