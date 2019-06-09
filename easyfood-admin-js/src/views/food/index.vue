@@ -2,27 +2,11 @@
   <div class="app-container">
     <el-container style="height: calc(100vh - 300px);">
       <el-header>
-        <div class="filter-container">
-          <el-input
-            v-model="menuForm.name"
-            placeholder="菜单名称"
-            style="width: 200px;"
-            class="filter-item"
-          />
-          <el-input
-            v-model="menuForm.description"
-            placeholder="菜单描述"
-            style="width: 300px;"
-            class="filter-item"
-          />
-          <el-button
-            class="filter-item"
-            style="margin-left: 10px;"
-            type="primary"
-            icon="el-icon-edit"
-            @click="handleCreate"
-          >新增</el-button>
-        </div>
+        <el-tabs v-model="tabName">
+          <el-tab-pane label="全部商品" name="first"></el-tab-pane>
+          <el-tab-pane label="库存不足" name="second"></el-tab-pane>
+          <el-tab-pane label="已下架" name="third"></el-tab-pane>
+        </el-tabs>
       </el-header>
       <el-container>
         <el-aside width="185px">
@@ -34,7 +18,11 @@
                 :class="menu.id == menuActiveId ? 'menu-item-active' : ''"
                 v-for="menu in menus"
                 :key="menu.id"
-              >{{ menu.name }}</li>
+              >
+                <i class="el-icon-sort"></i>
+                <span>{{ menu.name }}</span>
+                <i @click.stop.prevent="editMenu(menu)" class="el-icon-edit-outline"></i>
+              </li>
             </ul>
           </el-scrollbar>
         </el-aside>
@@ -75,35 +63,61 @@
         </el-container>
       </el-container>
     </el-container>
-    <div class="show-d">
-      <el-tag>The default order :</el-tag>
-      {{ oldList }}
-    </div>
-    <div class="show-d">
-      <el-tag>The after dragging order :</el-tag>
-      {{ newList }}
-    </div>
+    <el-dialog
+      v-loading="editMenuLoading"
+      :title="menuFormType == 'add' ? '新增分类' : '编辑分类'"
+      :visible.sync="dialogMenuVisible"
+    >
+      <el-form label-position="left" label-width="80px" :model="formLabelAlign">
+        <el-form-item label="分类名称">
+          <el-input v-model="menuForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="描述信息">
+          <el-input v-model="menuForm.description"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button
+          style="float:left"
+          @click="deleteMenu(menuForm.id)"
+          :visible="menuFormType != 'add'"
+          type="danger"
+        >删除分类</el-button>
+        <el-button @click="closeMenuDialog">取 消</el-button>
+        <el-button @click="confirmEditMenu" type="primary">
+          <template v-if="menuFormType == 'add'">新 增</template>
+          <template v-else>保 存</template>
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, add } from "@/api/menu";
+import { getList, addMenu, editMenu, delMenu, sortUpdate } from "@/api/menu";
 import Sortable from "sortablejs";
+import { setTimeout, clearTimeout } from "timers";
+import { close } from "fs";
 
 export default {
   name: "Food",
   data() {
     return {
       menus: null,
+      tabName: "first",
       menuActiveId: 0,
+      editMenuLoading: false,
       listLoading: true,
+      dialogMenuVisible: false,
+      menuFormType: "add",
       menuForm: {
         name: "",
         description: ""
       },
       sortable: null,
       oldList: [],
-      newList: []
+      newList: [],
+      sortUpdateTimeout: null //用于延迟更新拖动顺序
     };
   },
   created() {
@@ -113,7 +127,7 @@ export default {
     async handleCreate() {
       this.listLoading = true;
       this.menuForm.shopId = this.$store.state.user.currentShop;
-      const { data } = await add(this.menuForm);
+      const { data } = await addMenu(this.menuForm);
       this.menus.push(data);
       this.listLoading = false;
     },
@@ -131,6 +145,12 @@ export default {
         if (this.menus.length > 0) this.setActive(this.menus[0].id);
       });
     },
+    openMenuDialog() {
+      this.dialogMenuVisible = true;
+    },
+    closeMenuDialog() {
+      this.dialogMenuVisible = false;
+    },
     // 高亮菜单
     setActive(menuId) {
       this.menuActiveId = menuId;
@@ -139,9 +159,70 @@ export default {
     changeMenu(menuId) {
       this.setActive(menuId);
     },
+    // 编辑菜单
+    editMenu(menu) {
+      this.menuForm.name = menu.name;
+      this.menuForm.shopId = this.$store.state.user.currentShop;
+      this.menuForm.description = menu.description;
+      this.menuForm.id = menu.id;
+      this.menuFormType = "edit";
+      this.openMenuDialog();
+    },
+    // 分类的删除
+    deleteMenu(menuId) {
+      this.$confirm(
+        "是否确认删除该分类？删除分类后该分类下的所有商品也将被删除，且删除后无法复原。请谨慎操作。",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
+        this.editMenuLoading = true;
+        delMenu(this.$store.state.user.currentShop, this.menuId)
+          .then(res => {
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
+            this.editMenuLoading = false;
+          })
+          .catch(() => {
+            this.editMenuLoading = false;
+          });
+      });
+      // .catch(() => {
+      //   this.$message({
+      //     type: "info",
+      //     message: "已取消删除"
+      //   });
+      // });
+    },
+    confirmEditMenu() {
+      this.editMenuLoading = true;
+      editMenu(this.menuForm)
+        .then(res => {
+          this.$message({
+            message: "修改分类成功",
+            type: "success"
+          });
+          this.editMenuLoading = false;
+          this.closeMenuDialog();
+          // 重新渲染页面数据
+          for (let i in this.menus) {
+            if (this.menus[i].id == this.menuForm.id) {
+              this.menus[i].name = this.menuForm.name;
+              this.menus[i].description = this.menuForm.description;
+            }
+          }
+        })
+        .catch(() => {
+          this.editMenuLoading = false;
+        });
+    },
     setSort() {
       const el = this.$refs.dragMenus;
-
       this.sortable = Sortable.create(el, {
         ghostClass: "sortable-ghost", // Class name for the drop placeholder,
         setData: function(dataTransfer) {
@@ -150,11 +231,27 @@ export default {
           dataTransfer.setData("Text", "");
         },
         onEnd: evt => {
+          if (this.sortUpdateTimeout != null) {
+            clearTimeout(this.sortUpdateTimeout);
+            this.sortUpdateTimeout = null;
+          }
           const targetRow = this.menus.splice(evt.oldIndex, 1)[0];
           this.menus.splice(evt.newIndex, 0, targetRow);
           // for show the changes, you can delete in you code
           const tempIndex = this.newList.splice(evt.oldIndex, 1)[0];
           this.newList.splice(evt.newIndex, 0, tempIndex);
+          let sortParams = {
+            shopId: this.$store.state.user.currentShop,
+            ids: this.newList
+          };
+          this.sortUpdateTimeout = setTimeout(() => {
+            sortUpdate(sortParams).then(res => {
+              this.$message({
+                message: "更新菜单分类顺序成功",
+                type: "success"
+              });
+            });
+          }, 500);
         }
       });
     }
@@ -193,9 +290,28 @@ $main-color: #1989fa;
       line-height: 40px;
       border: 1px solid transparent;
       border-right: none;
+      position: relative;
+      [class*=" el-icon-"],
+      [class^="el-icon-"] {
+        display: none;
+      }
       &.menu-item-active,
       &:hover {
         color: $main-color;
+      }
+      &:hover {
+        [class*=" el-icon-"],
+        [class^="el-icon-"] {
+          display: inline;
+          position: absolute;
+          top: 13px;
+          &.el-icon-sort {
+            left: -20px;
+          }
+          &.el-icon-edit-outline {
+            right: 20px;
+          }
+        }
       }
       &.menu-item-active {
         border-top: 1px solid $border-color;

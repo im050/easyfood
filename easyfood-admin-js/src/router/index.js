@@ -55,7 +55,7 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/food',
+    path: '/',
     component: Layout,
     redirect: '/food',
     children: [{
