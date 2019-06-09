@@ -55,27 +55,19 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/shop',
+    path: '/food',
     component: Layout,
-    redirect: '/shop/menu',
-    name: 'Shop',
-    meta: {
-      title: '商品管理',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: 'menu',
-        component: () => import('@/views/menu/index'), // Parent router-view
-        name: '分类管理',
-        meta: { title: '分类管理', icon: 'menu' }
-      },
-      {
-        path: 'food',
-        component: () => import('@/views/menu/index'),
-        meta: { title: '餐品管理', icon: 'food' }
+    redirect: '/food',
+    children: [{
+      path: 'food',
+      name: 'Food',
+      component: () => import('@/views/food/index'),
+      meta: {
+        title: '商品管理',
+        icon: 'food'
       }
-    ]
+    }]
+
   },
 
   // {
