@@ -50,6 +50,8 @@ public class ShopGuardAspect {
             } catch (MethodNotFoundException ex) {
                 log.warn("`ShopGuard` annotation has not found setShopId method: {}", ex);
             }
+        } else {
+            objects[0] = shopId;
         }
         // 验证shop是否有权限管理
         Merchant merchant = Session.getMerchant();

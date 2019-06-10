@@ -48,11 +48,7 @@ public class MenuController {
     @RequiresPermissions("menu:list")
     @GetMapping("/list")
     @ShopGuard
-    public Response list(@RequestParam("shopId") Integer shopId) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(shopId, merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
+    public Response list(Integer shopId) {
         List<Menu> menus = menuService.list(new QueryWrapper<Menu>().eq(ColumnConstants.SHOP_ID, shopId).orderByAsc("sort"));
         return Response.success(menus);
     }
@@ -97,8 +93,11 @@ public class MenuController {
     @PostMapping("/delete")
     @RequiresPermissions("menu:delete")
     @ShopGuard
-    public Response delete(@RequestParam("shopId") Integer shopId, @RequestParam("menuId") Integer id) {
-        if (menuService.removeById(id)) {
+    public Response delete(Integer shopId, @RequestParam("menuId") Integer id) {
+        QueryWrapper<Menu> menuQueryWrapper = new QueryWrapper<>();
+        menuQueryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
+        menuQueryWrapper.eq(ColumnConstants.ID, id);
+        if (menuService.remove(menuQueryWrapper)) {
             return Response.success();
         }
         return Response.error();

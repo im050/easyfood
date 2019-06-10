@@ -1,11 +1,10 @@
 import request from '@/utils/request'
 import qs from 'qs'
 
-export function getList(params) {
+export function getList() {
   return request({
     url: '/menu/list',
-    method: 'get',
-    params
+    method: 'get'
   })
 }
 
@@ -33,12 +32,12 @@ export function editMenu(data) {
   })
 }
 
-export function delMenu(shopId, menuId) {
+export function delMenu(menuId) {
   return request({
     url: '/menu/delete',
     method: 'post',
     data: qs.stringify({
-      shopId, menuId
+      menuId
     })
   })
 }

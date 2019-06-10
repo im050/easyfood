@@ -174,9 +174,7 @@ export default {
     },
     // 获取菜单列表
     async getList() {
-      const { data } = await getList({
-        shopId: this.$store.state.user.currentShop
-      });
+      const { data } = await getList();
       this.menus = data;
       this.oldList = this.menus.map(v => v.id);
       this.newList = this.oldList.slice();
@@ -246,7 +244,7 @@ export default {
         }
       ).then(() => {
         this.editMenuLoading = true;
-        delMenu(this.$store.state.user.currentShop, this.menuId)
+        delMenu(this.menuId)
           .then(res => {
             this.$message({
               type: "success",
@@ -307,7 +305,7 @@ export default {
           const tempIndex = this.newList.splice(evt.oldIndex, 1)[0];
           this.newList.splice(evt.newIndex, 0, tempIndex);
           let sortParams = {
-            shopId: this.$store.state.user.currentShop,
+            //shopId: this.$store.state.user.currentShop,
             ids: this.newList
           };
           this.sortUpdateTimeout = setTimeout(() => {
