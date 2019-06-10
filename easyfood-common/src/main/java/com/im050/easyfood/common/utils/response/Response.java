@@ -15,12 +15,16 @@ public class Response extends HashMap<String, Object> {
         put(CODE, ResponseCode.SUCCESS.getCode());
     }
 
-    public Response(ResponseCode responseCode, Object object) {
-        put(CODE, responseCode.getCode());
-        put(MSG, responseCode.getMessage());
-        if (object != null) {
-            put(DATA, object);
+    public Response(Integer code, String message, Object... objects) {
+        put(CODE, code);
+        put(MSG, message);
+        if (objects.length > 0) {
+            put(DATA, objects[0]);
         }
+    }
+
+    public Response(ResponseCode responseCode, Object object) {
+        this(responseCode.getCode(), responseCode.getMessage(), object);
     }
 
     public static Response success(Object data) {
@@ -37,6 +41,10 @@ public class Response extends HashMap<String, Object> {
 
     public static Response error() {
         return new Response(ResponseCode.ERROR, null);
+    }
+
+    public static Response error(Integer code, String message) {
+        return new Response(code, message);
     }
 
 }

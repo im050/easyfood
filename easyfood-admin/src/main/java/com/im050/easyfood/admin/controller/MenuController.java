@@ -2,6 +2,7 @@ package com.im050.easyfood.admin.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.im050.easyfood.admin.annotation.ShopGuard;
 import com.im050.easyfood.admin.param.SortParam;
 import com.im050.easyfood.admin.utils.Session;
 import com.im050.easyfood.common.constant.ColumnConstants;
@@ -34,13 +35,9 @@ public class MenuController {
     @RequiresPermissions("menu:add")
     @ApiOperation("添加菜单")
     @PostMapping("/add")
+    @ShopGuard
     public Response add(@RequestBody Menu menu) {
-        Merchant merchant = Session.getMerchant();
-        Integer shopId = menu.getShopId();
         menu.setId(null);
-        if (!shopService.checkShopOwner(shopId, merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         if (!menu.insert()) {
             return Response.error();
         }
@@ -50,6 +47,7 @@ public class MenuController {
     @ApiOperation("菜单列表")
     @RequiresPermissions("menu:list")
     @GetMapping("/list")
+    @ShopGuard
     public Response list(@RequestParam("shopId") Integer shopId) {
         Merchant merchant = Session.getMerchant();
         if (!shopService.checkShopOwner(shopId, merchant.getId())) {
@@ -64,11 +62,8 @@ public class MenuController {
     @PostMapping("/sortUpdate")
     @RequiresPermissions("menu:edit")
     @Transactional
+    @ShopGuard
     public Response sortUpdate(@RequestBody SortParam sortParam) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(sortParam.getShopId(), merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         List<Integer> ids = sortParam.getIds();
         for (int i = 0; i < ids.size(); i++) {
             UpdateWrapper updateWrapper = new UpdateWrapper();
@@ -85,11 +80,8 @@ public class MenuController {
     @ApiOperation("编辑分类")
     @PostMapping("/edit")
     @RequiresPermissions("menu:edit")
+    @ShopGuard
     public Response edit(@RequestBody Menu menu) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(menu.getShopId(), merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         UpdateWrapper updateWrapper = new UpdateWrapper();
         updateWrapper.eq(ColumnConstants.ID, menu.getId());
         updateWrapper.eq(ColumnConstants.SHOP_ID, menu.getShopId()); //验证shopId是否对应
@@ -104,11 +96,8 @@ public class MenuController {
     @ApiOperation("删除分类")
     @PostMapping("/delete")
     @RequiresPermissions("menu:delete")
+    @ShopGuard
     public Response delete(@RequestParam("shopId") Integer shopId, @RequestParam("menuId") Integer id) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(shopId, merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         if (menuService.removeById(id)) {
             return Response.success();
         }

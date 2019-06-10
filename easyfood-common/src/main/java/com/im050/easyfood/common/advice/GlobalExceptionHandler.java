@@ -1,5 +1,6 @@
 package com.im050.easyfood.common.advice;
 
+import com.im050.easyfood.common.exception.HttpException;
 import com.im050.easyfood.common.utils.response.Response;
 import com.im050.easyfood.common.utils.response.ResponseCode;
 import org.apache.shiro.authz.AuthorizationException;
@@ -19,6 +20,12 @@ public class GlobalExceptionHandler {
     public Response exceptionHandler(Exception exception) {
         log.error("global error: {}", exception);
         return Response.error();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = HttpException.class)
+    public Response httpExceptionHandler(HttpException exception) {
+        return Response.error(exception.getCode(), exception.getMessage());
     }
 
     @ResponseBody

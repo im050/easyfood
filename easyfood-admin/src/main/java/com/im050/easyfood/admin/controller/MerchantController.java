@@ -1,5 +1,6 @@
 package com.im050.easyfood.admin.controller;
 
+import com.im050.easyfood.admin.annotation.ShopGuard;
 import com.im050.easyfood.admin.entity.MerchantAdminVO;
 import com.im050.easyfood.admin.utils.Session;
 import com.im050.easyfood.common.entity.Merchant;
