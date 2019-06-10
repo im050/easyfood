@@ -28,11 +28,14 @@
         </el-aside>
         <el-container>
           <el-main>
+            <div style="margin-bottom: 20px; text-align: right;">
+              <el-button type="primary" icon="el-icon-edit-outline" @click="addFood">新建商品</el-button>
+            </div>
             <!-- Note that row-key is necessary to get a correct row order. -->
             <el-table
               ref="dragTable"
               v-loading="listLoading"
-              :data="menus"
+              :data="foods"
               row-key="id"
               fit
               highlight-current-row
@@ -43,9 +46,40 @@
                   <span>{{ scope.row.id }}</span>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="名称" width="200">
+              <el-table-column align="center" label="商品" width="80">
+                <template slot-scope="scope">
+                  <el-popover placement="right-start" width="200" trigger="hover">
+                    <template scope="">
+                      <el-image style="width: 100%; " :src="scope.row.pic" fit="fill"></el-image>
+                      <el-upload
+                        style="width: 100%; text-align: center; margin-top: 8px;"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                      >
+                        <el-button size="middle" type="primary">更换</el-button>
+                      </el-upload>
+                    </template>
+                    <el-image
+                      slot="reference"
+                      style="width: 54px; height: 54px"
+                      :src="scope.row.pic"
+                      fit="fill"
+                    ></el-image>
+                  </el-popover>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="" width="110">
                 <template slot-scope="scope">
                   <span>{{ scope.row.name }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="价格" width="80">
+                <template slot-scope="scope">
+                  <span>￥{{ scope.row.price }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column align="center" label="库存" width="110">
+                <template slot-scope="scope">
+                  <span>{{ scope.row.stock }}</span>
                 </template>
               </el-table-column>
               <el-table-column align="center" label="描述">
@@ -53,9 +87,9 @@
                   <span>{{ scope.row.description }}</span>
                 </template>
               </el-table-column>
-              <el-table-column align="center" label="拖动" width="80">
-                <template slot-scope="{}">
-                  <svg-icon class="drag-handler" icon-class="drag"/>
+              <el-table-column align="center" label="" width="80">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="editFood(scope.row.id)" round>编辑</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -68,7 +102,7 @@
       :title="menuFormType == 'add' ? '新增分类' : '编辑分类'"
       :visible.sync="dialogMenuVisible"
     >
-      <el-form label-position="left" label-width="80px" :model="formLabelAlign">
+      <el-form label-position="left" label-width="80px">
         <el-form-item label="分类名称">
           <el-input v-model="menuForm.name"></el-input>
         </el-form-item>
@@ -95,6 +129,7 @@
 
 <script>
 import { getList, addMenu, editMenu, delMenu, sortUpdate } from "@/api/menu";
+import { getFoods } from "@/api/food";
 import Sortable from "sortablejs";
 import { setTimeout, clearTimeout } from "timers";
 import { close } from "fs";
@@ -104,6 +139,7 @@ export default {
   data() {
     return {
       menus: null,
+      foods: null,
       tabName: "first",
       menuActiveId: 0,
       editMenuLoading: false,
@@ -131,25 +167,49 @@ export default {
       this.menus.push(data);
       this.listLoading = false;
     },
+    // 获取菜单列表
     async getList() {
-      this.listLoading = true;
       const { data } = await getList({
         shopId: this.$store.state.user.currentShop
       });
       this.menus = data;
-      this.listLoading = false;
       this.oldList = this.menus.map(v => v.id);
       this.newList = this.oldList.slice();
       this.$nextTick(() => {
         this.setSort();
-        if (this.menus.length > 0) this.setActive(this.menus[0].id);
+        let firstMenuId = this.menus[0].id;
+        if (this.menus.length > 0) this.changeMenu(firstMenuId);
       });
     },
     openMenuDialog() {
       this.dialogMenuVisible = true;
     },
+    editFood(foodId) {
+      this.$router.push({
+        name: "FoodEdit",
+        params: { id: foodId, menus: this.menus }
+      });
+    },
+    addFood() {
+      this.$router.push({
+        name: "FoodAdd",
+        params: { menuId: this.menuActiveId, menus: this.menus }
+      });
+    },
     closeMenuDialog() {
       this.dialogMenuVisible = false;
+    },
+    // 获取商品列表
+    async getFoods(menuId) {
+      this.listLoading = true;
+      const { data } = await getFoods({
+        shopId: this.$store.state.user.currentShop,
+        menuId
+      }).catch(e => {
+        this.listLoading = false;
+      });
+      this.foods = data;
+      this.listLoading = false;
     },
     // 高亮菜单
     setActive(menuId) {
@@ -158,6 +218,7 @@ export default {
     // 更换菜单
     changeMenu(menuId) {
       this.setActive(menuId);
+      this.getFoods(menuId);
     },
     // 编辑菜单
     editMenu(menu) {
@@ -251,7 +312,7 @@ export default {
                 type: "success"
               });
             });
-          }, 500);
+          }, 2000);
         }
       });
     }

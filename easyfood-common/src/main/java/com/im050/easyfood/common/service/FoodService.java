@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2019-06-01
  */
 public interface FoodService extends IService<Food> {
-	
+
 }

@@ -1,6 +1,6 @@
 package com.im050.easyfood.admin.controller;
 
-import com.im050.easyfood.admin.entity.MerchantVO;
+import com.im050.easyfood.admin.entity.MerchantAdminVO;
 import com.im050.easyfood.admin.utils.Session;
 import com.im050.easyfood.common.entity.Merchant;
 import com.im050.easyfood.common.entity.Shop;
@@ -29,9 +29,9 @@ public class MerchantController {
     public Response info() {
         Merchant merchant = Session.getMerchant();
         List<Shop> shops = shopService.getMerchantShop(merchant.getId());
-        MerchantVO merchantVO = new MerchantVO();
-        BeanUtils.copyProperties(merchant, merchantVO);
-        merchantVO.setShops(shops);
-        return Response.success(merchantVO);
+        MerchantAdminVO merchantAdminVO = new MerchantAdminVO();
+        BeanUtils.copyProperties(merchant, merchantAdminVO);
+        merchantAdminVO.setShops(shops);
+        return Response.success(merchantAdminVO);
     }
 }

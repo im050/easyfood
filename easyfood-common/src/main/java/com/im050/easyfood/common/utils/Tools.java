@@ -1,9 +1,14 @@
 package com.im050.easyfood.common.utils;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +41,29 @@ public class Tools {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private static String genTmpFileName() {
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+    }
+
+    public static String saveFile(MultipartFile file, String filePath) throws IOException {
+        return saveFile(file, genTmpFileName(), filePath);
+    }
+
+    public static String saveFile(MultipartFile file, String fileName, String filePath) throws IOException {
+        String originalName = file.getOriginalFilename();
+        String ext = originalName.substring(originalName.lastIndexOf(".") + 1, originalName.length());
+        fileName = fileName + "." + ext;
+        filePath = filePath + fileName;
+
+        File targetFile = new File(filePath);
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+        file.transferTo(targetFile);
+
+        return fileName;
     }
 
 }

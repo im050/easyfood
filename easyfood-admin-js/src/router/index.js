@@ -55,19 +55,41 @@ export const constantRoutes = [
     }]
   },
   {
-    path: '/',
+    path: '/food',
     component: Layout,
     redirect: '/food',
     children: [{
-      path: 'food',
+      path: '',
       name: 'Food',
       component: () => import('@/views/food/index'),
       meta: {
         title: '商品管理',
-        icon: 'food'
+        icon: 'food',
+        activeMenu: '/food'
+      }
+    }, {
+      path: 'edit/:id(\\d+)',
+      name: 'FoodEdit',
+      hidden: true,
+      component: () => import('@/views/food/edit'),
+      meta: {
+        title: '商品编辑',
+        icon: 'food',
+        activeMenu: '/food',
+        noCache: true
+      }
+    }, {
+      path: 'add',
+      name: 'FoodAdd',
+      hidden: true,
+      component: () => import('@/views/food/edit'),
+      meta: {
+        title: '新建商品',
+        icon: 'food',
+        activeMenu: '/food',
+        noCache: true
       }
     }]
-
   },
 
   // {

@@ -8,6 +8,9 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO;
+import org.apache.shiro.session.mgt.eis.MemorySessionDAO;
+import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -67,7 +70,9 @@ public class ShiroConfig {
 
     @Bean
     public SessionManager sessionManager() {
-        return new HeaderSessionManager();
+        HeaderSessionManager headerSessionManager = new HeaderSessionManager();
+        headerSessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());
+        return headerSessionManager;
     }
 
     @Bean
@@ -78,6 +83,11 @@ public class ShiroConfig {
         securityManager.setRealm(realm());
         securityManager.setSessionManager(sessionManager());
         return securityManager;
+    }
+
+    @Bean
+    public SessionDAO sessionDAO(){
+        return new MemorySessionDAO();
     }
 
     private ShiroRedisCacheManager cacheManager(RedisTemplate redisTemplate){

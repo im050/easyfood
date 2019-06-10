@@ -10,6 +10,24 @@ const service = axios.create({
   timeout: 5000 // request timeout
 })
 
+const Base64 = {
+  encode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+      function toSolidBytes(match, p1) {
+        return String.fromCharCode('0x' + p1)
+      }))
+  },
+  decode(str) {
+    // Going backwards: from bytestream, to percent-encoding, to original string.
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+  }
+}
+
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -19,9 +37,9 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-EasyFood-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-EasyFood-Token'] = getToken()
-      console.log(getToken())
+      config.headers['X-EasyFood-Token'] = Base64.encode(getToken() + '|' + store.getters.currentShop)
     }
+
     return config
   },
   error => {

@@ -42,3 +42,6 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+upload-path: /Users/linyulin/workspaces/easyfood-repository/upload/ #文件夹结尾需要斜杠
+static-url: http://easyfood-image.com/

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Accessors(chain = true)
-public class MerchantVO extends Merchant {
+public class MerchantAdminVO extends Merchant {
     private List<Shop> shops;
 
     @Override

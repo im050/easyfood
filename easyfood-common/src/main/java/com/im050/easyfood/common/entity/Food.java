@@ -25,11 +25,13 @@ public class Food extends SuperEntity<Food> {
 	private String name;
 	private String description;
 	private Integer menuId;
+	private Integer shopId;
 	private BigDecimal price;
 	private Integer stock;
 	private Integer maxStock;
 	private Boolean enabled;
 	private String pic;
+	private String unit;
     /**
      * 次日置满库存
      */

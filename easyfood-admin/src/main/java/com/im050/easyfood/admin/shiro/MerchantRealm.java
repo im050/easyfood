@@ -70,6 +70,9 @@ public class MerchantRealm extends AuthorizingRealm {
         // put merchant info into session cache.
         SecurityUtils.getSubject().getSession().setAttribute(SessionConstants.MERCHANT, merchant);
 
+        // set session timeout
+        SecurityUtils.getSubject().getSession().setTimeout(1000 * 60 * 60 * 24 * 7);
+
         return new SimpleAuthenticationInfo(
                 merchant.getUsername(), //用户名
                 merchant.getPassword(), //密码

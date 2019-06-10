@@ -27,7 +27,11 @@ public class AttrVO extends Attr {
         return super.getParentId() <= 0 ? super.getMultiple() : null;
     }
 
-    public Boolean getSelect() {
+    /**
+     * 给前端判断用的参数
+     * @return
+     */
+    public Boolean getSelected() {
         return super.getParentId() <= 0 ? null : false;
     }
 }

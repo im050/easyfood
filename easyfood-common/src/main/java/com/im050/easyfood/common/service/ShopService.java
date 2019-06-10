@@ -34,6 +34,15 @@ public interface ShopService extends IService<Shop> {
     boolean checkShopOwner(Integer shopId, Integer merchantId);
 
     /**
+     * 商店下是否存在menu
+     *
+     * @param shopId
+     * @param menuId
+     * @return
+     */
+    boolean hasMenu(Integer shopId, Integer menuId);
+
+    /**
      * 获取商店的所有菜单和餐品
      *
      * @param shopId
