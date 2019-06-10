@@ -1,5 +1,6 @@
 package com.im050.easyfood.common.shiro;
 
+import com.im050.easyfood.common.utils.TokenTool;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
@@ -23,14 +24,11 @@ public class HeaderSessionManager extends DefaultWebSessionManager {
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         String base64Token = WebUtils.toHttp(request).getHeader(TOKEN_NAME);
         if (!StringUtils.isEmpty(base64Token)) {
-            byte[] token = Base64.getDecoder().decode(base64Token);
-            String originToken = new String(token);
-            String[] decodeToken = StringUtils.split(originToken, "|");
-            String id = decodeToken != null && decodeToken.length > 0 ? decodeToken[0] : null;
+            TokenTool tokenTool = new TokenTool(base64Token);
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, REFERENCED_SESSION_ID_SOURCE);
-            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);
+            request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, tokenTool.getToken());
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);
-            return id;
+            return tokenTool.getToken();
         } else {
             return super.getSessionId(request, response);
         }

@@ -138,8 +138,8 @@ export default {
   name: "Food",
   data() {
     return {
-      menus: null,
-      foods: null,
+      menus: [],
+      foods: [],
       tabName: "first",
       menuActiveId: 0,
       editMenuLoading: false,
@@ -157,7 +157,12 @@ export default {
     };
   },
   created() {
-    this.getList();
+    this.getList().then(res => {
+      //返回后选中之前的分类
+      if (this.$route.params.menuId) {
+        this.changeMenu(this.$route.params.menuId);
+      }
+    });
   },
   methods: {
     async handleCreate() {

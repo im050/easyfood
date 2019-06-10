@@ -64,7 +64,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     public boolean hasMenu(Integer shopId, Integer menuId) {
         QueryWrapper<Menu> menuQueryWrapper = new QueryWrapper<>();
         menuQueryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
-        menuQueryWrapper.eq(ColumnConstants.MENU_ID, menuId);
+        menuQueryWrapper.eq(ColumnConstants.ID, menuId);
         return menuService.count(menuQueryWrapper) > 0;
     }
 
