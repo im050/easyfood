@@ -20,7 +20,7 @@ service.interceptors.request.use(
       // let each request carry token
       // ['X-EasyFood-Token'] is a custom headers key
       // please modify it according to the actual situation
-      config.headers['X-EasyFood-Token'] = Base64.encode(getToken() + '|' + 100)// store.getters.currentShop)
+      config.headers['X-EasyFood-Token'] = Base64.encode(getToken() + '|' + store.getters.currentShop)
     }
 
     return config

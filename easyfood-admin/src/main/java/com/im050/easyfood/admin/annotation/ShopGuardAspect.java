@@ -10,6 +10,8 @@ import com.im050.easyfood.common.utils.response.ResponseCode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,6 +26,8 @@ public class ShopGuardAspect {
 
     @Autowired
     private ShopService shopService;
+
+    private Logger log = LoggerFactory.getLogger(ShopGuardAspect.class);
 
     @Around("@annotation(ShopGuard)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -44,7 +48,7 @@ public class ShopGuardAspect {
                 Method method = objects[0].getClass().getMethod("setShopId", Integer.class);
                 method.invoke(objects[0], shopId);
             } catch (MethodNotFoundException ex) {
-                //nothing to do.
+                log.warn("`ShopGuard` annotation has not found setShopId method: {}", ex);
             }
         }
         // 验证shop是否有权限管理

@@ -2,6 +2,7 @@ package com.im050.easyfood.admin.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.im050.easyfood.admin.annotation.ShopGuard;
 import com.im050.easyfood.admin.entity.FoodAdminVO;
 import com.im050.easyfood.admin.utils.Session;
 import com.im050.easyfood.common.constant.ColumnConstants;
@@ -47,11 +48,8 @@ public class FoodController {
     @ApiOperation("获取餐品信息")
     @GetMapping("/list")
     @RequiresPermissions("food:list")
+    @ShopGuard
     public Response list(@RequestParam("shopId") Integer shopId, @RequestParam Integer menuId) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(shopId, merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
         queryWrapper.eq(ColumnConstants.MENU_ID, menuId);
@@ -62,11 +60,8 @@ public class FoodController {
     @ApiOperation("获取商品详情")
     @GetMapping("/detail")
     @RequiresPermissions("food:list")
+    @ShopGuard
     public Response detail(@RequestParam("shopId") Integer shopId, @RequestParam("foodId") Integer foodId) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(shopId, merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
         queryWrapper.eq(ColumnConstants.ID, foodId);
@@ -79,11 +74,8 @@ public class FoodController {
     @ApiOperation("添加商品")
     @PostMapping("/add")
     @RequiresPermissions("food:add")
+    @ShopGuard
     public Response add(@RequestBody FoodAdminVO foodAdminVO) {
-        Merchant merchant = Session.getMerchant();
-        if (!shopService.checkShopOwner(foodAdminVO.getShopId(), merchant.getId())) {
-            return Response.error(ResponseCode.SHOP_OWNER_ERROR);
-        }
         if (!shopService.hasMenu(foodAdminVO.getShopId(), foodAdminVO.getMenuId())) {
             return Response.error();
         }
