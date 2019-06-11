@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class AttrVO extends Attr {
-    public List<AttrVO> attrs;
 
     @Override
     public BigDecimal getMarkup() {

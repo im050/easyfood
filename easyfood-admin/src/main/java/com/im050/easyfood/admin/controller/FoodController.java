@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.im050.easyfood.admin.annotation.ShopGuard;
 import com.im050.easyfood.common.constant.ColumnConstants;
 import com.im050.easyfood.common.entity.Food;
-import com.im050.easyfood.common.entity.view.FoodVO;
+import com.im050.easyfood.common.exception.HttpException;
 import com.im050.easyfood.common.service.AttrRelationshipService;
 import com.im050.easyfood.common.service.FoodService;
 import com.im050.easyfood.common.service.ShopService;
@@ -16,7 +16,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,8 @@ public class FoodController {
 
     @Value("${static-url}")
     private String staticUrl;
+
+    private Logger log = LoggerFactory.getLogger(FoodController.class);
 
     @ApiOperation("获取餐品信息")
     @GetMapping("/list")
@@ -78,7 +81,12 @@ public class FoodController {
         if (!shopService.hasMenu(food.getShopId(), food.getMenuId())) {
             return Response.error();
         }
-        food.insert();
+        try {
+            foodService.addFoodWithAttrs(food);
+        } catch (HttpException e) {
+            log.error("Add food failed: {}", e);
+            return Response.error();
+        }
         return Response.success(food.getId());
     }
 

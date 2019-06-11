@@ -1,8 +1,10 @@
 package com.im050.easyfood.common.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -21,6 +23,10 @@ public class Attr extends SuperEntity<Attr> {
 	private Integer shopId;
 	private Integer parentId;
 	private BigDecimal markup;
+
+	@TableField(exist = false)
+	private List<Attr> attrs;
+
     /**
      * 是否可多选
      */

@@ -62,22 +62,23 @@ public class AttrRelationshipServiceImpl extends ServiceImpl<AttrRelationshipDao
         if (CollectionUtils.isEmpty(ids)) {
             return;
         }
+        //取出所有所有Attrs
         List<Attr> attrs = attrRelationshipDao.getAttrsWithIds(ids);
-        List<AttrVO> attrVOS = Tools.changeToVo(attrs, AttrVO.class);
-        if (CollectionUtils.isEmpty(attrVOS)) {
+
+        if (CollectionUtils.isEmpty(attrs)) {
             return;
         }
         //父子关系attr
-        Map<Integer, List<AttrVO>> attrGroup = attrVOS.stream().collect(Collectors.groupingBy(AttrVO::getParentId));
-        List<AttrVO> parentAttr = new ArrayList<>();
+        Map<Integer, List<Attr>> attrGroup = attrs.stream().collect(Collectors.groupingBy(Attr::getParentId));
+        List<Attr> parentAttr = new ArrayList<>();
         //整理父子关系
-        attrVOS.forEach(attr -> {
+        attrs.forEach(attr -> {
             //子分类不处理
             if (attr.getParentId() > 0) {
                 return;
             }
             Integer id = attr.getId();
-            List<AttrVO> children = attrGroup.get(id);
+            List<Attr> children = attrGroup.get(id);
             if (CollectionUtils.isEmpty(children)) {
                 return;
             }
@@ -85,21 +86,21 @@ public class AttrRelationshipServiceImpl extends ServiceImpl<AttrRelationshipDao
             parentAttr.add(attr);
         });
         //根据ID创建map
-        Map<Integer, AttrVO> parentAttrVOMap = parentAttr.stream().collect(Collectors.toMap(AttrVO::getId, Function.identity(), (key1, key2) -> key2));
+        Map<Integer, Attr> parentAttrMap = parentAttr.stream().collect(Collectors.toMap(Attr::getId, Function.identity(), (key1, key2) -> key2));
         //餐品ID和属性的对应map
         Map<Integer, List<AttrRelationship>> attrRelationshipMap = attrRelationships.stream().collect(Collectors.groupingBy(AttrRelationship::getFoodId));
         foods.forEach(food -> {
-            List<AttrRelationship> foodAttrs = attrRelationshipMap.get(food.getId());
-            if (CollectionUtils.isEmpty(foodAttrs)) {
+            List<AttrRelationship> foodAttrRelationships = attrRelationshipMap.get(food.getId());
+            if (CollectionUtils.isEmpty(foodAttrRelationships)) {
                 return;
             }
-            List<AttrVO> foodAttrVOS = new ArrayList<>();
-            foodAttrs.forEach(attrRelationship -> {
+            List<Attr> foodAttrs = new ArrayList<>();
+            foodAttrRelationships.forEach(attrRelationship -> {
                 Integer attrId = attrRelationship.getAttrId();
-                AttrVO attrVO = parentAttrVOMap.get(attrId);
-                foodAttrVOS.add(attrVO);
+                Attr attr = parentAttrMap.get(attrId);
+                foodAttrs.add(attr);
             });
-            food.setAttrs(foodAttrVOS);
+            food.setAttrs(foodAttrs);
         });
     }
 }

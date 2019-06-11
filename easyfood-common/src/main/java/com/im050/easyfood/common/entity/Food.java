@@ -37,7 +37,7 @@ public class Food extends SuperEntity<Food> {
 	private String unit;
 
 	@TableField(exist=false)
-	private List<AttrVO> attrs;
+	private List<Attr> attrs;
 
     /**
      * 次日置满库存
