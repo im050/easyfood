@@ -22,12 +22,12 @@ public interface AttrRelationshipDao extends BaseMapper<AttrRelationship> {
             "SELECT * FROM attr WHERE id IN ",
             "<foreach collection='ids' index='index' item='item' open='(' separator=',' close=')'>",
             "#{item}",
-            "</foreach>",
+            "</foreach> AND del_status = 0",
             "UNION",
             "SELECT * FROM attr WHERE parent_id IN",
             "<foreach collection='ids' index='index' item='item' open='(' separator=',' close=')'>",
             "#{item}",
-            "</foreach>",
+            "</foreach> AND del_status = 0",
             "</script>"})
     List<Attr> getAttrsWithIds(@Param("ids") List<Integer> ids);
 }

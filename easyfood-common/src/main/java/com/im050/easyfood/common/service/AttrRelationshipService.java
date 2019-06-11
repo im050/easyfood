@@ -1,5 +1,6 @@
 package com.im050.easyfood.common.service;
 
+import com.im050.easyfood.common.entity.Attr;
 import com.im050.easyfood.common.entity.AttrRelationship;
 import com.im050.easyfood.common.entity.Food;
 import com.im050.easyfood.common.entity.view.FoodVO;
@@ -16,6 +17,7 @@ import java.util.List;
  * @since 2019-06-01
  */
 public interface AttrRelationshipService extends IService<AttrRelationship> {
+    List<Attr> getAttrTree(Integer foodId);
     void injectAttr(Food food);
     void injectAttr(List<? extends Food> foods);
 }

@@ -10,4 +10,8 @@ public class ColumnConstants {
     public final static String SORT = "sort";
     public final static String NAME = "name";
     public final static String DESCRIPTION = "description";
+    public final static String MARKUP = "markup";
+    public final static String REQUIRED = "required";
+    public final static String MULTIPLE = "multiple";
+    public final static String ATTR_ID = "attr_id";
 }

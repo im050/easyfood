@@ -37,6 +37,7 @@ public class SuperEntity<T extends Model<?>> extends Model<T> {
      * 删除标记(0:未删除 1:已删除)
      */
     @JsonIgnore
+    @TableLogic
     private Boolean delStatus;
 
 

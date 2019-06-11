@@ -98,7 +98,7 @@ public class FoodController {
         if (!shopService.hasMenu(food.getShopId(), food.getMenuId())) {
             return Response.error();
         }
-        food.updateById();
+        foodService.editFoodWithAttrs(food);
         return Response.success(food.getId());
     }
 

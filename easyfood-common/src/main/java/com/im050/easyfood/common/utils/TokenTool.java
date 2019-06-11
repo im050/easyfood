@@ -3,12 +3,14 @@ package com.im050.easyfood.common.utils;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import sun.tools.jstat.Token;
-
 import java.util.Base64;
 
+/**
+ * token处理工具类
+ *
+ * @author linyulin
+ */
 @Data
 @Accessors(chain = true)
 public class TokenTool {

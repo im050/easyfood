@@ -76,6 +76,10 @@
               <el-form inline style="padding-bottom: 0 !important;">
                 <el-form-item label="属性名称">
                   <el-input
+                    :rules="{
+      required: true, message: '属性名不能为空', trigger: 'blur'
+    }"
+                    :prop="'foodForm.attrs['+index+'].name'"
                     placeholder="输入属性名称"
                     style="width: 120px;"
                     v-model="foodForm.attrs[index].name"
@@ -102,7 +106,15 @@
                     :label="'选项' + (subIndex+1)"
                     prop="required"
                   >
-                    <el-input style="width: 220px;" placeholder="请输入选项名称" v-model="subAttr.name">
+                    <el-input
+                      :rules="{
+      required: true, message: '选项名不能为空', trigger: 'blur'
+    }"
+                      :prop="'foodForm.attrs['+index+'].attrs['+subIndex+'].name'"
+                      style="width: 220px;"
+                      placeholder="请输入选项名称"
+                      v-model="subAttr.name"
+                    >
                       <template slot="prepend">名称</template>
                     </el-input>
                     <el-input style="width: 220px;" placeholder="0.00" v-model="subAttr.markup">
@@ -218,13 +230,21 @@ export default {
         message: "上传图片成功"
       });
     },
-    async addFood() {
+    addFood() {
       this.isSubmitted = true;
-      const { data } = await addFood(this.foodForm);
-      this.isSubmitted = false;
-      this.$router.push({
-        name: "Food",
-        params: { menuId: this.foodForm.menuId }
+      this.$refs["foodForm"].validate(valid => {
+        if (valid) {
+          addFood(this.foodForm).then(res => {
+            this.isSubmitted = false;
+            this.$router.push({
+              name: "Food",
+              params: { menuId: this.foodForm.menuId }
+            });
+          });
+        } else {
+          this.isSubmitted = false;
+          return false;
+        }
       });
     },
     addSubAttrInput(attrIndex) {
@@ -290,7 +310,15 @@ export default {
       const { data } = await getFood(shopId, foodId).catch(e => {
         console.log(e);
       });
-      console.log(data);
+      // 初始化数组容器
+      if (!data.hasOwnProperty("attrs")) {
+        data.attrs = [];
+      }
+      for (let i in data.attrs) {
+        if (!data.attrs[i].hasOwnProperty("attrs")) {
+          data.attrs[i].attrs = [];
+        }
+      }
       this.foodForm = data;
     }
   }
