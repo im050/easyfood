@@ -80,7 +80,6 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
         List<Food> foods = foodService.list(foodQueryWrapper);
         List<FoodVO> foodVOS = Tools.changeToVo(foods, FoodVO.class);
         Map<Integer, List<FoodVO>> foodsMenuGroup = foodVOS.stream().collect(Collectors.groupingBy(FoodVO::getMenuId));
-        System.out.println(foodVOS);
 
         menuVOS.forEach(menu -> {
             menu.setFoods(foodsMenuGroup.get(menu.getId()));

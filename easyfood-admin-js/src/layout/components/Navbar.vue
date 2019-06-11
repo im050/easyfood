@@ -1,9 +1,7 @@
 <template>
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -11,15 +9,12 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/" v-for="(item, index) in merchant.shops" :key="index">
-            <el-dropdown-item>
+            <el-dropdown-item @click.native="handlerShop(item.id)" v-for="item in merchant.shops" :key="item.id">
               {{ item.name }}
             </el-dropdown-item>
-          </router-link>
-          
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">退出</span>
-          </el-dropdown-item>
+            <el-dropdown-item divided>
+              <span style="display:block;" @click="logout">退出</span>
+            </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -58,6 +53,19 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
+    },
+    handlerShop(shopId) {
+      this.$store.commit('user/SET_CURRENT_SHOP', shopId);
+      this.refresh();
+      console.log("change shop");
+    },
+    refresh () {
+      this.$router.replace({
+        path: '/refresh',
+        query: {
+          t: Date.now()
+        }
+      })
     },
     async logout() {
       await this.$store.dispatch('user/logout')

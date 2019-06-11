@@ -3,9 +3,10 @@ package com.im050.easyfood.admin.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.im050.easyfood.admin.annotation.ShopGuard;
-import com.im050.easyfood.admin.entity.FoodAdminVO;
 import com.im050.easyfood.common.constant.ColumnConstants;
 import com.im050.easyfood.common.entity.Food;
+import com.im050.easyfood.common.entity.view.FoodVO;
+import com.im050.easyfood.common.service.AttrRelationshipService;
 import com.im050.easyfood.common.service.FoodService;
 import com.im050.easyfood.common.service.ShopService;
 import com.im050.easyfood.common.utils.Tools;
@@ -35,6 +36,9 @@ public class FoodController {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private AttrRelationshipService attrRelationshipService;
+
     @Value("${upload-path}")
     private String uploadPath;
 
@@ -62,21 +66,18 @@ public class FoodController {
         queryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
         queryWrapper.eq(ColumnConstants.ID, foodId);
         Food food = foodService.getOne(queryWrapper);
-        FoodAdminVO foodAdminVO = new FoodAdminVO();
-        BeanUtils.copyProperties(food, foodAdminVO);
-        return Response.success(foodAdminVO);
+        attrRelationshipService.injectAttr(food);
+        return Response.success(food);
     }
 
     @ApiOperation("添加商品")
     @PostMapping("/add")
     @RequiresPermissions("food:add")
     @ShopGuard
-    public Response add(@RequestBody FoodAdminVO foodAdminVO) {
-        if (!shopService.hasMenu(foodAdminVO.getShopId(), foodAdminVO.getMenuId())) {
+    public Response add(@RequestBody Food food) {
+        if (!shopService.hasMenu(food.getShopId(), food.getMenuId())) {
             return Response.error();
         }
-        Food food = new Food();
-        BeanUtils.copyProperties(foodAdminVO, food);
         food.insert();
         return Response.success(food.getId());
     }
@@ -85,12 +86,10 @@ public class FoodController {
     @PostMapping("/edit")
     @RequiresPermissions("food:edit")
     @ShopGuard
-    public Response edit(@RequestBody FoodAdminVO foodAdminVO) {
-        if (!shopService.hasMenu(foodAdminVO.getShopId(), foodAdminVO.getMenuId())) {
+    public Response edit(@RequestBody Food food) {
+        if (!shopService.hasMenu(food.getShopId(), food.getMenuId())) {
             return Response.error();
         }
-        Food food = new Food();
-        BeanUtils.copyProperties(foodAdminVO, food);
         food.updateById();
         return Response.success(food.getId());
     }

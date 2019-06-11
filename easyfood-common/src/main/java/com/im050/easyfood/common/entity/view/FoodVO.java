@@ -10,7 +10,6 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class FoodVO extends Food {
-    public List<AttrVO> attrs;
    // private BigDecimal realPrice;
 
     public BigDecimal getRealPrice() {

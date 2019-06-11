@@ -2,11 +2,14 @@ package com.im050.easyfood.common.entity;
 
 import java.math.BigDecimal;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Date;
+import java.util.List;
 
 
+import com.im050.easyfood.common.entity.view.AttrVO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -32,6 +35,10 @@ public class Food extends SuperEntity<Food> {
 	private Boolean enabled;
 	private String pic;
 	private String unit;
+
+	@TableField(exist=false)
+	private List<AttrVO> attrs;
+
     /**
      * 次日置满库存
      */

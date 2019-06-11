@@ -44,6 +44,12 @@ export const constantRoutes = [
   },
 
   {
+    path: '/refresh',
+    component: () => import('@/views/refresh'),
+    hidden: true
+  },
+
+  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',

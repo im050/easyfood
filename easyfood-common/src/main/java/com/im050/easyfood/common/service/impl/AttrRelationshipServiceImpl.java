@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.im050.easyfood.common.constant.ColumnConstants;
 import com.im050.easyfood.common.entity.Attr;
 import com.im050.easyfood.common.entity.AttrRelationship;
+import com.im050.easyfood.common.entity.Food;
 import com.im050.easyfood.common.entity.view.AttrVO;
 import com.im050.easyfood.common.entity.view.FoodVO;
 import com.im050.easyfood.common.service.AttrService;
@@ -11,6 +12,7 @@ import com.im050.easyfood.common.utils.Tools;
 import com.im050.easyfood.common.dao.AttrRelationshipDao;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.im050.easyfood.common.service.AttrRelationshipService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,8 +42,18 @@ public class AttrRelationshipServiceImpl extends ServiceImpl<AttrRelationshipDao
     AttrRelationshipDao attrRelationshipDao;
 
     @Override
-    public void injectAttr(List<? extends FoodVO> foods) {
-        List<Integer> foodIds = foods.stream().map(FoodVO::getId).collect(Collectors.toList());
+    public void injectAttr(Food food) {
+        List<Food> foods = new ArrayList<>();
+        foods.add(food);
+        injectAttr(foods);
+    }
+
+    @Override
+    public void injectAttr(List<? extends Food> foods) {
+        if (CollectionUtils.isEmpty(foods)) {
+            return ;
+        }
+        List<Integer> foodIds = foods.stream().map(Food::getId).collect(Collectors.toList());
         //根据foodIds取出所有relationship
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.in(ColumnConstants.FOOD_ID, foodIds);

@@ -149,7 +149,7 @@ export default {
       tabName: "first",
       menuActiveId: 0,
       editMenuLoading: false,
-      listLoading: true,
+      listLoading: false,
       dialogMenuVisible: false,
       menuFormType: "add",
       menuForm: {
@@ -193,8 +193,10 @@ export default {
       this.newList = this.oldList.slice();
       this.$nextTick(() => {
         this.setSort();
-        let firstMenuId = this.menus[0].id;
-        if (this.menus.length > 0) this.changeMenu(firstMenuId);
+        if (this.menus.length > 0) {
+          let firstMenuId = this.menus[0].id;
+          this.changeMenu(firstMenuId);
+        }
       });
     },
     openMenuDialog() {
@@ -217,6 +219,9 @@ export default {
     },
     // 获取商品列表
     async getFoods(menuId) {
+      if (menuId == null || menuId <= 0) {
+        return;
+      }
       this.listLoading = true;
       const { data } = await getFoods({
         shopId: this.$store.state.user.currentShop,
