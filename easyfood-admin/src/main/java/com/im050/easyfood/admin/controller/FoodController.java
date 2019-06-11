@@ -81,6 +81,20 @@ public class FoodController {
         return Response.success(food.getId());
     }
 
+    @ApiOperation("编辑商品")
+    @PostMapping("/edit")
+    @RequiresPermissions("food:edit")
+    @ShopGuard
+    public Response edit(@RequestBody FoodAdminVO foodAdminVO) {
+        if (!shopService.hasMenu(foodAdminVO.getShopId(), foodAdminVO.getMenuId())) {
+            return Response.error();
+        }
+        Food food = new Food();
+        BeanUtils.copyProperties(foodAdminVO, food);
+        food.updateById();
+        return Response.success(food.getId());
+    }
+
     @ApiOperation("上传接口")
     @PostMapping("/upload")
     @RequiresPermissions("food:edit")

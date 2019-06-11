@@ -24,6 +24,9 @@
                 <i @click.stop.prevent="editMenu(menu)" class="el-icon-edit-outline"></i>
               </li>
             </ul>
+            <div class="add-btn">
+              <el-button type="primary" size="small" @click="dialogAddMenu" plain round>添加分类</el-button>
+            </div>
           </el-scrollbar>
         </el-aside>
         <el-container>
@@ -114,11 +117,14 @@
         <el-button
           style="float:left"
           @click="deleteMenu(menuForm.id)"
-          :visible="menuFormType != 'add'"
           type="danger"
+          v-if="menuFormType != 'add'"
         >删除分类</el-button>
         <el-button @click="closeMenuDialog">取 消</el-button>
-        <el-button @click="confirmEditMenu" type="primary">
+        <el-button
+          @click="menuFormType == 'add' ? handleCreate() : confirmEditMenu()"
+          type="primary"
+        >
           <template v-if="menuFormType == 'add'">新 增</template>
           <template v-else>保 存</template>
         </el-button>
@@ -171,6 +177,13 @@ export default {
       const { data } = await addMenu(this.menuForm);
       this.menus.push(data);
       this.listLoading = false;
+      this.closeMenuDialog();
+    },
+    dialogAddMenu() {
+      this.openMenuDialog();
+      this.menuForm.name = "";
+      this.menuForm.description = "";
+      this.menuFormType = "add";
     },
     // 获取菜单列表
     async getList() {
@@ -244,13 +257,15 @@ export default {
         }
       ).then(() => {
         this.editMenuLoading = true;
-        delMenu(this.menuId)
+        delMenu(menuId)
           .then(res => {
             this.$message({
               type: "success",
               message: "删除成功!"
             });
             this.editMenuLoading = false;
+            this.getList();
+            this.closeMenuDialog();
           })
           .catch(() => {
             this.editMenuLoading = false;
@@ -341,6 +356,12 @@ $border-color: #dfe4ee;
 $main-color: #1989fa;
 
 .el-aside {
+  .add-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
   .menu-items {
     list-style: none;
     padding-inline-start: 20px;
