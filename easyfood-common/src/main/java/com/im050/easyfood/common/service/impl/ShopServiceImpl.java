@@ -72,6 +72,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
     public List<MenuVO> getAllFoodsWithMenu(Integer shopId) {
         QueryWrapper queryWrapper = new QueryWrapper();
         queryWrapper.eq(ColumnConstants.SHOP_ID, shopId);
+        queryWrapper.orderByAsc(ColumnConstants.SORT);
         List<Menu> menus = menuService.list(queryWrapper);
         List<MenuVO> menuVOS = Tools.changeToVo(menus, MenuVO.class);
 
@@ -85,6 +86,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopDao, Shop> implements ShopS
             menu.setFoods(foodsMenuGroup.get(menu.getId()));
         });
 
+        menuVOS.removeIf(menuVO -> menuVO.getFoods() == null || menuVO.getFoods().size() <= 0);
         attrRelationshipService.injectAttr(foodVOS);
 
         //
